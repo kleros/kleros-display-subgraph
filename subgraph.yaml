@@ -1,56 +1,83 @@
-specVersion: 0.0.4
-description: Kleros subgraph
+specVersion: 0.0.5
 schema:
   file: ./schema.graphql
+features:
+  - ipfsOnEthereumContracts
 dataSources:
-  - name: Kleros
-    kind: ethereum
-    network: xdai
+  - kind: ethereum
+    name: KlerosLiquid
+    network: mainnet
     source:
-      address: "0x9c1da9a04925bdfdedf0f6421bc7eea8305f9002"
-      abi: Kleros
-      startBlock: 16895601
+      address: "0x988b3A538b618C7A603e1c11Ab82Cd16dbE28069"
+      abi: KlerosLiquid
+      startBlock: 7303699
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
-      file: ./mappings/index.ts
       entities:
-        - Dispute
+        - Draw
+        - DisputeCreation
+        - Counter
+        - AppealDecision
       abis:
-        - name: Kleros
-          file: ./contracts/kleros.json
+        - name: KlerosLiquid
+          file: ./contracts/KlerosLiquid.json
       eventHandlers:
-        - event: DisputeCreation(indexed uint256,indexed address)
-          handler: handleDisputeCreation
-        - event: AppealPossible(indexed uint256,indexed address)
-          handler: handleAppealPossible
-        - event: AppealDecision(indexed uint256,indexed address)
-          handler: handleAppealDecision
-        - event: NewPeriod(indexed uint256,uint8)
-          handler: handleNewPeriod
         - event: Draw(indexed address,indexed uint256,uint256,uint256)
           handler: handleDraw
+        - event: DisputeCreation(indexed uint256,indexed address)
+          handler: handleDisputeCreation
+        - event: NewPeriod(indexed uint256,uint8)
+          handler: handleNewPeriod
+        - event: AppealDecision(indexed uint256,indexed address)
+          handler: handleAppealDecision
         - event: TokenAndETHShift(indexed address,indexed uint256,int256,int256)
           handler: handleTokenAndETHShift
+      callHandlers:
+        - function: "createSubcourt(uint96,bool,uint256,uint256,uint256,uint256,uint256[4],uint256)"
+          handler: CreateSubcourtCallHandler
+        - function: "changeSubcourtTimesPerPeriod(uint96,uint256[4])"
+          handler: ChangeSubcourtTimesPerPeriodCallHandler
+      file: ./mappings/kleros-liquid.ts
+  - kind: ethereum
+    name: PolicyRegistry
+    network: mainnet
+    source:
+      address: "0xcf1f07713d5193fae5c1653c9f61953d048bece4"
+      abi: PolicyRegistry
+      startBlock: 10175794
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - PolicyUpdate
+      abis:
+        - name: PolicyRegistry
+          file: ./contracts/PolicyRegistry.json
+      eventHandlers:
+        - event: PolicyUpdate(indexed uint256,string)
+          handler: handlePolicyUpdate
+      file: ./mappings/policy-registry.ts
 templates:
   - name: Arbitrable
     kind: ethereum/contract
-    network: xdai
+    network: mainnet
     source:
       abi: Arbitrable
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
-      file: ./mappings/index.ts
+      file: ./mappings/arbitrable.ts
       entities:
         - Dispute
         - EvidenceGroup
         - Evidence
       abis:
         - name: Arbitrable
-          file: ./contracts/arbitrable.json
+          file: ./contracts/Arbitrable.json
       eventHandlers:
         - event: MetaEvidence(indexed uint256,string)
           handler: handleMetaEvidence
