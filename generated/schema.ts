@@ -115,6 +115,19 @@ export class Dispute extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get disputeIDNumber(): BigInt {
+    let value = this.get("disputeIDNumber");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set disputeIDNumber(value: BigInt) {
+    this.set("disputeIDNumber", Value.fromBigInt(value));
+  }
+
   get arbitrated(): Bytes {
     let value = this.get("arbitrated");
     if (!value || value.kind == ValueKind.NULL) {

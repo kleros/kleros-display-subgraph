@@ -98,6 +98,7 @@ export function handleDisputeCreation(ev: DisputeCreationEv): void {
   }
 
   const dispute = new Dispute(ev.params._disputeID.toString());
+  dispute.disputeIDNumber = ev.params._disputeID
   dispute.arbitrated = ev.params._arbitrable;
   dispute.metaEvidenceId = ZERO;
   dispute.ruling = ZERO;
