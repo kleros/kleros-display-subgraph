@@ -1,5 +1,11 @@
 {
     "chain": "mainnet",
-    "address": "0x988b3a538b618c7a603e1c11ab82cd16dbe28069",
-    "startBlock": "7303699"
+    "kleros": {
+        "address": "0x988b3A538b618C7A603e1c11Ab82Cd16dbE28069",
+        "startBlock": "7303699"
+    },
+    "policyRegistry": {
+        "address": "0xcf1f07713d5193fae5c1653c9f61953d048bece4",
+        "startBlock": "10175794"
+    }
 }

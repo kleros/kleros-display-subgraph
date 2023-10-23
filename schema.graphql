@@ -14,6 +14,7 @@ type ArbitrableHistory @entity {
 
 type Dispute @entity {
   id: ID!
+  disputeIDNumber: BigInt!
   arbitrated: Bytes!
   metaEvidenceId: BigInt!
   arbitrableHistory: ArbitrableHistory
@@ -21,17 +22,54 @@ type Dispute @entity {
   ruled: Boolean!
   period: Period!
   createdAtBlock: BigInt!
-  lastPeriodChange: BigInt!
+  court: Court!
+  periodDeadline: BigInt!
+  periodNotificationIndex: BigInt!
+  lastPeriodChangeTs: BigInt!
+  lastPeriodChangeBlock: BigInt!
   nbChoices: BigInt!
   nbRounds: BigInt!
+  currentRound: Round!
   rounds: [Round!]! @derivedFrom(field: "dispute")
   evidenceGroup: EvidenceGroup! @derivedFrom(field: "dispute")
 }
 
 type Round @entity {
   id: Bytes!
+  round: BigInt!
+  isCurrentRound: Boolean!
   dispute: Dispute!
   jurors: [Bytes!]!
+}
+
+type UserDisputeInfo @entity {
+  id: String!
+  dispute: Dispute!
+  juror: String!
+}
+
+type UserRoundInfo @entity {
+  id: String!
+  dispute: Dispute!
+  drawNotificationIndex: BigInt!
+  juror: String!
+  round: Round!
+}
+
+type Counter @entity {
+  id: String!
+  counter: BigInt!
+}
+
+type Court @entity {
+  id: String!
+  timesPerPeriod: [BigInt!]
+  hiddenVotes: Boolean
+  policy: String
+  name: String
+  description: String
+  summary: String
+  requiredSkills: String
 }
 
 type Draw @entity {

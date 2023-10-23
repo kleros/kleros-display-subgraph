@@ -7,7 +7,7 @@
   "scripts": {
     "build": "graph build",
     "gen": "graph codegen --output-dir generated",
-    "deploy-gnosis": "mustache config/xdai.json subgraph.template.yaml > subgraph.yaml && mustache config/xdai.json mappings/const.template.ts > mappings/const.ts && yarn gen && graph deploy --product hosted-service kleros/kleros-display-gnosis",
-    "deploy-mainnet": "mustache config/mainnet.json subgraph.template.yaml > subgraph.yaml && mustache config/mainnet.json mappings/const.template.ts > mappings/const.ts && yarn gen && graph deploy --product hosted-service kleros/kleros-display-mainnet"
+    "deploy-gnosis": "mustache config/xdai.json subgraph.template.yaml > subgraph.yaml && yarn gen && graph deploy --product hosted-service kleros/kleros-display-gnosis",
+    "deploy-mainnet": "mustache config/mainnet.json subgraph.template.yaml > subgraph.yaml && yarn gen && graph deploy --product hosted-service kleros/kleros-display-mainnet"
   }
 }
