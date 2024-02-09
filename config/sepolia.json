@@ -1,5 +1,5 @@
 {
-    "chain": "mainnet",
+    "chain": "sepolia",
     "kleros": {
         "address": "0x90992fb4E15ce0C59aEFfb376460Fda4Ee19C879",
         "startBlock": "3635742"
