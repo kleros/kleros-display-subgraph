@@ -5,10 +5,12 @@
     "mustache": "^4.2.0"
   },
   "scripts": {
-    "build": "graph build",
+    "clean": "graph clean",
     "gen": "graph codegen --output-dir generated",
-    "deploy-gnosis": "mustache config/xdai.json subgraph.template.yaml > subgraph.yaml && yarn gen && graph deploy --product hosted-service kleros/kleros-display-gnosis",
-    "deploy-mainnet": "mustache config/mainnet.json subgraph.template.yaml > subgraph.yaml && yarn gen && graph deploy --product hosted-service kleros/kleros-display-mainnet",
-    "deploy-sepolia": "mustache config/sepolia.json subgraph.template.yaml > subgraph.yaml && yarn gen && graph deploy --product hosted-service kleros/kleros-display-sepolia"
-  }
+    "build": "graph build",
+    "deploy-gnosis": "mustache config/xdai.json subgraph.template.yaml > subgraph.yaml && yarn gen && graph deploy --studio kleros/kleros-display-gnosis",
+    "deploy-mainnet": "mustache config/mainnet.json subgraph.template.yaml > subgraph.yaml && yarn gen && graph deploy --studio kleros/kleros-display-mainnet",
+    "deploy-sepolia": "mustache config/sepolia.json subgraph.template.yaml > subgraph.yaml && yarn gen && graph deploy --studio kleros-display-sepolia"
+  },
+  "packageManager": "yarn@1.22.21+sha1.1959a18351b811cdeedbd484a8f86c3cc3bbaf72"
 }
