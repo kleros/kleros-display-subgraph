@@ -1,6 +1,7 @@
 import { PolicyUpdate as PolicyUpdateEvent } from "../generated/PolicyRegistry/PolicyRegistry"
-import { Court } from "../generated/schema"
-import { ipfs, log, json, Bytes } from "@graphprotocol/graph-ts";
+import { Court,CourtMetadata } from "../generated/schema"
+import { json, Bytes, dataSource, log } from "@graphprotocol/graph-ts";
+import { CourtMetadata as CourtMetadataTemplate } from "../generated/templates";
 
 export function handlePolicyUpdate(event: PolicyUpdateEvent): void {
   let court = Court.load(
@@ -12,38 +13,28 @@ export function handlePolicyUpdate(event: PolicyUpdateEvent): void {
       event.params._subcourtID.toString()
     )
   }
-  court.policy = event.params._policy
+  const ipfsHash =  event.params._policy.replace('/ipfs/', '')
+  court.policy = ipfsHash;
+  court.metadata = ipfsHash;
 
-  let jsonStr = ipfs.cat(event.params._policy);
-  if (!jsonStr) {
-    log.error('Failed to fetch policy #{} SubcourtID: {}', [event.params._policy, event.params._subcourtID.toString()]);
-    court.save();
-    return;
-  }
-
-  let jsonObjValueAndSuccess = json.try_fromBytes(jsonStr as Bytes);
-  if (!jsonObjValueAndSuccess.isOk) {
-    log.error(`Error getting json object value for policy #{} SubcourtID: {}`, [event.params._policy, event.params._subcourtID.toString()]);
-    court.save();
-    return;
-  }
-
-  let jsonObj = jsonObjValueAndSuccess.value.toObject();
-  if (!jsonObj) {
-    log.error(`Error converting object value for policy #{} SubcourtID: {}`, [event.params._policy, event.params._subcourtID.toString()]);
-    court.save();
-    return;
-  }
-
-  const name = jsonObj.get('name');
-  court.name = name? name.toString() : null;
-
-  const description = jsonObj.get('description');
-  court.description = description? description.toString() : null;
-
-  const requiredSkills = jsonObj.get('requiredSkills');
-  court.requiredSkills = requiredSkills? requiredSkills.toString() : null;
-
+  CourtMetadataTemplate.create(ipfsHash)
   court.save();
 
+}
+
+export function handleCourtMetadata(content: Bytes): void {
+  let courtMetadata = new CourtMetadata(dataSource.stringParam())
+  const value = json.fromBytes(content).toObject()
+  log.debug("got value {}",[json.fromBytes(content).toString()])
+  if (value) {
+    const name = value.get('name');
+    courtMetadata.name = name? name.toString() : null;
+  
+    const description = value.get('description');
+    courtMetadata.description = description? description.toString() : null;
+  
+    const requiredSkills = value.get('requiredSkills');
+    courtMetadata.requiredSkills = requiredSkills? requiredSkills.toString() : null;
+    courtMetadata.save()
+  }
 }

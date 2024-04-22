@@ -66,9 +66,14 @@ type Court @entity {
   timesPerPeriod: [BigInt!]
   hiddenVotes: Boolean
   policy: String
+  summary: String
+  metadata: CourtMetadata
+}
+
+type CourtMetadata @entity{
+  id: ID!
   name: String
   description: String
-  summary: String
   requiredSkills: String
 }
 
