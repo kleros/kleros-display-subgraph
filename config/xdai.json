@@ -1,11 +1,11 @@
 {
-    "chain": "xdai",
-    "kleros": {
-        "address": "0x9c1da9a04925bdfdedf0f6421bc7eea8305f9002",
-        "startBlock": "16895601"
-    },
-    "policyRegistry": {
-        "address": "0x9d494768936b6bdaabc46733b8d53a937a6c6d7e",
-        "startBlock": "16895606"
-    }
+  "chain": "gnosis",
+  "kleros": {
+    "address": "0x9c1da9a04925bdfdedf0f6421bc7eea8305f9002",
+    "startBlock": "16895601"
+  },
+  "policyRegistry": {
+    "address": "0x9d494768936b6bdaabc46733b8d53a937a6c6d7e",
+    "startBlock": "16895606"
+  }
 }
