@@ -22,7 +22,7 @@ import {
   UserDisputeInfo,
   StakeSet
 } from "../generated/schema";
-import { ONE, ZERO, ZERO_B } from "./const";
+import { ONE, ZERO, ZERO_B } from "../const";
 import { BigInt, Bytes, crypto, log } from "@graphprotocol/graph-ts";
 
 export class Period {
