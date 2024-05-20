@@ -1,49 +1,38 @@
-import { PolicyUpdate as PolicyUpdateEvent } from "../generated/PolicyRegistry/PolicyRegistry"
-import { Court } from "../generated/schema"
-import { ipfs, log, json, Bytes } from "@graphprotocol/graph-ts";
+import { PolicyUpdate as PolicyUpdateEvent } from "../generated/PolicyRegistry/PolicyRegistry";
+import { Court, CourtMetadata } from "../generated/schema";
+import { json, Bytes, dataSource } from "@graphprotocol/graph-ts";
+import { CourtMetadata as CourtMetadataTemplate } from "../generated/templates";
 
 export function handlePolicyUpdate(event: PolicyUpdateEvent): void {
-  let court = Court.load(
-    event.params._subcourtID.toString()
-  )
+  let court = Court.load(event.params._subcourtID.toString());
 
   if (!court) {
-    court = new Court(
-      event.params._subcourtID.toString()
-    )
-  }
-  court.policy = event.params._policy
-
-  let jsonStr = ipfs.cat(event.params._policy);
-  if (!jsonStr) {
-    log.error('Failed to fetch policy #{} SubcourtID: {}', [event.params._policy, event.params._subcourtID.toString()]);
-    court.save();
-    return;
+    court = new Court(event.params._subcourtID.toString());
   }
 
-  let jsonObjValueAndSuccess = json.try_fromBytes(jsonStr as Bytes);
-  if (!jsonObjValueAndSuccess.isOk) {
-    log.error(`Error getting json object value for policy #{} SubcourtID: {}`, [event.params._policy, event.params._subcourtID.toString()]);
-    court.save();
-    return;
-  }
+  const ipfsHash = event.params._policy.replace("/ipfs/", "");
+  court.policy = ipfsHash;
+  court.metadata = ipfsHash;
 
-  let jsonObj = jsonObjValueAndSuccess.value.toObject();
-  if (!jsonObj) {
-    log.error(`Error converting object value for policy #{} SubcourtID: {}`, [event.params._policy, event.params._subcourtID.toString()]);
-    court.save();
-    return;
-  }
-
-  const name = jsonObj.get('name');
-  court.name = name? name.toString() : null;
-
-  const description = jsonObj.get('description');
-  court.description = description? description.toString() : null;
-
-  const requiredSkills = jsonObj.get('requiredSkills');
-  court.requiredSkills = requiredSkills? requiredSkills.toString() : null;
-
+  CourtMetadataTemplate.create(ipfsHash);
   court.save();
+}
 
+export function handleCourtMetadata(content: Bytes): void {
+  let courtMetadata = new CourtMetadata(dataSource.stringParam());
+  const value = json.fromBytes(content).toObject();
+
+  if (value) {
+    const name = value.get("name");
+    courtMetadata.name = name ? name.toString() : null;
+
+    const description = value.get("description");
+    courtMetadata.description = description ? description.toString() : null;
+
+    const requiredSkills = value.get("requiredSkills");
+    courtMetadata.requiredSkills = requiredSkills
+      ? requiredSkills.toString()
+      : null;
+    courtMetadata.save();
+  }
 }

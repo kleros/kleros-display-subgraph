@@ -1,4 +1,4 @@
-specVersion: 0.0.5
+specVersion: 0.0.7
 schema:
   file: ./schema.graphql
 features:
@@ -87,3 +87,16 @@ templates:
           handler: handleEvidence
         - event: Ruling(indexed address,indexed uint256,uint256)
           handler: handleRuling
+  - name: CourtMetadata
+    kind: file/ipfs
+    mapping:
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./mappings/policy-registry.ts
+      handler: handleCourtMetadata
+      entities:
+        - CourtMetadata
+      abis:
+        - name: PolicyRegistry
+          file:  ./contracts/PolicyRegistry.json
+
