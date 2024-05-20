@@ -7,7 +7,9 @@ import {
   TokenAndETHShift as TokenAndETHShiftEv,
   KlerosLiquid,
   ChangeSubcourtTimesPerPeriodCall,
-  CreateSubcourtCall} from "../generated/KlerosLiquid/KlerosLiquid";
+  StakeSet as StakeSetEv,
+  CreateSubcourtCall
+} from "../generated/KlerosLiquid/KlerosLiquid";
 import { Arbitrable as ArbitrableContract } from "../generated/templates";
 import {
   Dispute,
@@ -18,6 +20,7 @@ import {
   Court,
   UserRoundInfo,
   UserDisputeInfo,
+  StakeSet
 } from "../generated/schema";
 import { ONE, ZERO, ZERO_B } from "./const";
 import { BigInt, Bytes, crypto, log } from "@graphprotocol/graph-ts";
@@ -129,7 +132,7 @@ export function handleDisputeCreation(ev: DisputeCreationEv): void {
   dispute.nbChoices = contract
     .disputes(ev.params._disputeID)
     .getNumberOfChoices();
-  
+
   const roundID = Bytes.fromByteArray(
     crypto.keccak256(biToBytes(ev.params._disputeID).concat(ZERO_B))
   )
@@ -228,17 +231,17 @@ export function handleDraw(ev: DrawEv): void {
   const round = Round.load(roundID);
   if (round == null) return;
 
-  let userDisputeInfo = UserDisputeInfo.load(ev.params._disputeID.toString()+"-"+ev.params._address.toHexString());
+  let userDisputeInfo = UserDisputeInfo.load(ev.params._disputeID.toString() + "-" + ev.params._address.toHexString());
   if (userDisputeInfo == null) {
-    userDisputeInfo = new UserDisputeInfo(ev.params._disputeID.toString()+ev.params._address.toHexString());
+    userDisputeInfo = new UserDisputeInfo(ev.params._disputeID.toString() + ev.params._address.toHexString());
     userDisputeInfo.dispute = ev.params._disputeID.toString();
     userDisputeInfo.juror = ev.params._address.toHexString();
     userDisputeInfo.save();
   }
 
-  let userRoundInfo = UserRoundInfo.load(ev.params._disputeID.toString()+"-"+ev.params._address.toHexString()+"-"+ev.params._appeal.toString());
+  let userRoundInfo = UserRoundInfo.load(ev.params._disputeID.toString() + "-" + ev.params._address.toHexString() + "-" + ev.params._appeal.toString());
   if (userRoundInfo == null) {
-    userRoundInfo = new UserRoundInfo(ev.params._disputeID.toString()+ev.params._address.toHexString());
+    userRoundInfo = new UserRoundInfo(ev.params._disputeID.toString() + ev.params._address.toHexString());
     userRoundInfo.dispute = ev.params._disputeID.toString();
     userRoundInfo.juror = ev.params._address.toHexString();
     userRoundInfo.round = roundID;
@@ -285,4 +288,18 @@ export function handleTokenAndETHShift(ev: TokenAndETHShiftEv): void {
   shift.disputeID = ev.params._disputeID;
   shift.tokenAmount = ev.params._tokenAmount;
   shift.save();
+}
+
+export function handleStakeSet(ev: StakeSetEv): void {
+  let entity = new StakeSet(
+    ev.transaction.hash.toHex() + "-" + ev.logIndex.toString()
+  )
+  entity.address = ev.params._address
+  entity.subcourtID = ev.params._subcourtID
+  entity.stake = ev.params._stake
+  entity.newTotalStake = ev.params._newTotalStake
+  entity.blocknumber = ev.block.number
+  entity.timestamp = ev.block.timestamp
+  entity.logIndex = ev.logIndex
+  entity.save()
 }
