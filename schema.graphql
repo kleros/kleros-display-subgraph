@@ -113,3 +113,15 @@ type Evidence @entity(immutable: true) {
   URI: String!
   sender: Bytes!
 }
+
+type StakeSet @entity {
+  "event.transaction.hash.toHex() + - + event.logIndex.toString()"
+  id: ID!
+  address: Bytes! # address
+  subcourtID: BigInt! # uint256
+  stake: BigInt! # uint128
+  newTotalStake: BigInt! # uint256
+  blocknumber: BigInt!
+  timestamp: BigInt!
+  logIndex: BigInt!
+}
