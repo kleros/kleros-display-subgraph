@@ -1,0 +1,11 @@
+{
+    "chain": "gnosis-chiado",
+    "kleros": {
+        "address": "0xD8798DfaE8194D6B4CD6e2Da6187ae4209d06f27",
+        "startBlock": "1165867"
+    },
+    "policyRegistry": {
+        "address": "0x53FC70FE1EC3a60f8939A62aBCc61bf1A57938D7",
+        "startBlock": "1164584"
+    }
+}

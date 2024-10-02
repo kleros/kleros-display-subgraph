@@ -1,4 +1,5 @@
 {
+  "license": "MIT",
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.69.2",
     "@graphprotocol/graph-ts": "^0.34.0",
@@ -10,7 +11,8 @@
     "build": "graph build",
     "deploy-gnosis": "mustache config/xdai.json subgraph.template.yaml > subgraph.yaml && yarn gen && graph deploy --studio kleros-display-gnosis",
     "deploy-mainnet": "mustache config/mainnet.json subgraph.template.yaml > subgraph.yaml && yarn gen && graph deploy --studio kleros-display-mainnet",
-    "deploy-sepolia": "mustache config/sepolia.json subgraph.template.yaml > subgraph.yaml && yarn gen && graph deploy --studio kleros-display-sepolia"
+    "deploy-sepolia": "mustache config/sepolia.json subgraph.template.yaml > subgraph.yaml && yarn gen && graph deploy --studio kleros-display-sepolia",
+    "deploy-chiado": "mustache config/chiado.json subgraph.template.yaml > subgraph.yaml && yarn gen && graph deploy --studio kleros-display-chiado"
   },
   "packageManager": "yarn@1.22.21+sha1.1959a18351b811cdeedbd484a8f86c3cc3bbaf72"
 }
